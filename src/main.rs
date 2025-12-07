@@ -12,15 +12,15 @@ fn ajouter_livre(biblio: &mut Vec<Livre>) {
     println!("=== Ajouter un livre ===");
 
     print!("Titre : ");
-    io::stdout().flush().unwrap();
+    io::stdout().flush().expect("erreur impossible d'afficher le texte");
     let titre = lire_ligne().trim().to_string();
 
     print!("Auteur : ");
-    io::stdout().flush().unwrap();
+    io::stdout().flush().expect("erreur impossible d'afficher le texte");
     let auteur = lire_ligne().trim().to_string();
 
     print!("Année de publication : ");
-    io::stdout().flush().unwrap();
+    io::stdout().flush().expect("erreur impossible d'afficher le texte");
     let annee_str = lire_ligne();
 
     let annee: u32 = match annee_str.trim().parse() {
@@ -40,15 +40,53 @@ fn ajouter_livre(biblio: &mut Vec<Livre>) {
 
     biblio.push(livre);
     println!("Livre ajouté avec succès !");
- }
+}
 
 fn emprunter_livre(biblio: &mut Vec<Livre>) { 
+    if biblio.is_empty() {
+        println!("Aucun livre dans la bibliothèque pour le moment.");
+        return;
+    }
 
- }
+        for (index, livre) in biblio.iter().enumerate() {
+        if livre.disponible {         
+            println!(
+                "{}. \"{}\" de {} ({})",
+                index + 1,
+                livre.titre,
+                livre.auteur,
+                livre.annee,
+            );
+        } else {
+        println!("Aucun livre n'est disponible pour le moment.");
+        return;
+        };
+    }
+
+    print!("Numéro du livre à emprunter : ");
+    io::stdout().flush().expect("erreur impossible d'afficher le texte");
+    let choix_str = lire_ligne();
+    let choix_num: usize = match choix_str.trim().parse() {
+        Ok(val) => val,
+        Err(_) => {
+            println!("Numéro invalide.");
+            return;
+        }
+    };
+
+    let livre = &mut biblio[choix_num - 1];
+
+    if livre.disponible {
+        livre.disponible = false;
+        println!("Vous avez emprunté \"{}\" !", livre.titre);
+    } else {
+        println!("Ce livre est déjà emprunté.");
+    }
+}
 
 fn retourner_livre(biblio: &mut Vec<Livre>) { 
 
- }
+}
 
 fn afficher_tous(biblio: &Vec<Livre>) { 
     println!("=== Tous les livres ===");
@@ -70,11 +108,29 @@ fn afficher_tous(biblio: &Vec<Livre>) {
             statut
         );
     }
- }
+}
 
 fn afficher_disponibles(biblio: &Vec<Livre>) { 
+    if biblio.is_empty() {
+        println!("Aucun livre dans la bibliothèque pour le moment.");
+        return;
+    }
 
- }
+        for (index, livre) in biblio.iter().enumerate() {
+        if livre.disponible {         
+            println!(
+                "{}. \"{}\" de {} ({})",
+                index + 1,
+                livre.titre,
+                livre.auteur,
+                livre.annee,
+            );
+        } else {
+        println!("Aucun livre n'est disponible pour le moment.");
+        return;
+        };
+    }
+}
 
 fn menu() {
     println!();
@@ -101,7 +157,7 @@ fn main() {
     loop {
         menu();
         print!("Votre choix : ");
-        io::stdout().flush().unwrap();
+        io::stdout().flush().expect("erreur impossible d'afficher le texte");
 
         let choix = lire_ligne();
 
